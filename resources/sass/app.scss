@@ -1,0 +1,31 @@
+$primary: hsl(270, 100%, 55%);
+
+@import "node_modules/bulma/bulma";
+@import "node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+
+.columns.is-centered {
+	.card {
+		margin-top: 35px;
+	}
+
+	.card-header {
+		background-color: hsl(270, 100%, 55%);
+	}
+
+	.card-header-title {
+		color: white;
+	}
+}
+
+.input, .textarea {
+	box-shadow: none;
+}
+
+.input:hover, .textarea:hover {
+	border-color: hsl(0, 0%, 86%);
+}
+
+.input:focus, .textbox:focus {
+	box-shadow: none;
+	border-color: hsl(0, 0%, 86%);
+}
