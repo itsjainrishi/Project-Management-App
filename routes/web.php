@@ -15,4 +15,5 @@ Route::get('/', function () {
 	return view('welcome');
 });
 
-Auth::routes();
+Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');

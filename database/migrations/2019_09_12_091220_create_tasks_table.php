@@ -6,29 +6,35 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateTasksTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('tasks', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('project_id');
-            $table->text('body');
-            $table->boolean('completed')->default(false);
-            $table->timestamps();
-        });
-    }
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('tasks', function (Blueprint $table) {
+			$table->increments('id');
+			$table->unsignedbigInteger('project_id');
+			$table->string('title');
+			$table->text('body');
+            $table->string('slug')->unique();
+			$table->tinyInteger('priority')->default(0);
+			$table->boolean('completed')->default(false);
+			$table->softDeletes();
+			$table->timestamps();
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('tasks');
-    }
+			$table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+		});
+	}
+
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		Schema::dropIfExists('tasks');
+	}
 }

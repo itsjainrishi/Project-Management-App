@@ -10,7 +10,7 @@
 				</header>
 
 				<div class="card-content">
-					<form class="login-form" method="POST" action="{{ route('login') }}">
+					<form class="login-form" method="POST" action="/api/login">
 						{{ csrf_field() }}
 
 						<div class="field">
@@ -51,7 +51,7 @@
 							</div>
 
 							<div class="control">
-								<a href="{{ route('password.request') }}">
+								<a href="{{ route('apipassword.request') }}">
 									Forgot Your Password?
 								</a>
 							</div>

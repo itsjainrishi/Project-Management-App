@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use \Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
@@ -29,7 +31,7 @@ class RegisterController extends Controller
 	 * @var string
 	 */
 	protected $redirectTo = 'api/projects';
-
+	public $successStatus = 200;
 	/**
 	 * Create a new controller instance.
 	 *
@@ -37,22 +39,7 @@ class RegisterController extends Controller
 	 */
 	public function __construct()
 	{
-		$this->middleware('guest');
-	}
-
-	/**
-	 * Get a validator for an incoming registration request.
-	 *
-	 * @param  array  $data
-	 * @return \Illuminate\Contracts\Validation\Validator
-	 */
-	protected function validator(array $data)
-	{
-		return Validator::make($data, [
-			'name' => ['required', 'string', 'max:255'],
-			'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-			'password' => ['required', 'string', 'min:8', 'confirmed'],
-		]);
+		$this->middleware('guest:api');
 	}
 
 	/**
@@ -72,5 +59,28 @@ class RegisterController extends Controller
 
 	public function showRegistrationForm() {
 		return view('pages.auth.register');
+	}
+
+	public function register(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'name' => ['required', 'string', 'max:255'],
+			'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+			'password' => ['required', 'string', 'min:8', 'confirmed'],
+		]);
+
+		if($validator->fails()){
+			return response()->json(['error'=>$validator->errors()], 401);
+		}
+
+		$user = $this->create($request->all());
+		// $user->sendApiEmailVerificationNotification();
+
+		$success['message'] = 'Please confirm yourself by clicking on verify user button sent to you on your email';
+
+		return response()->json(['success'=>$success], $this->successStatus);
+
+		// return $this->registered($request, $user)
+		// 				?: redirect($this->redirectPath());
 	}
 }

@@ -9,7 +9,7 @@
 				</header>
 
 				<div class="card-content">
-					<form class="register-form" method="POST" action="{{ route('register') }}">
+					<form class="register-form" method="POST" action="/api/register">
 
 						{{ csrf_field() }}
 
