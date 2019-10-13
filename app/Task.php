@@ -3,12 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\HasSlug;
+use App\RecordsActivity;
 
 class Task extends Model
 {
-	use SoftDeletes, HasSlug;
+	use HasSlug, RecordsActivity;
 
 	protected $guarded = [];
 
@@ -16,6 +16,8 @@ class Task extends Model
 		'completed' => 'boolean'
 	];
 
+	protected static $recordableEvents = ['created', 'deleted'];
+	
 	public function setSlugFromField() {
 		return 'title';
 	}
@@ -29,14 +31,14 @@ class Task extends Model
 	{
 		$this->update(['completed' => true]);
 
-		// $this->recordActivity('completed_task');
+		$this->recordActivity('completed_task');
 	}
 
 	public function incomplete()
 	{
 		$this->update(['completed' => false]);
 
-		// $this->recordActivity('incompleted_task');
+		$this->recordActivity('incompleted_task');
 	}
 
 	public function project()

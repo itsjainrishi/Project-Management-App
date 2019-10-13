@@ -37,17 +37,18 @@ class UserTest extends TestCase
 	{
 		$project = $this->owner->projects()->create(factory('App\Project')->raw());
 
-		// $this->actingAs($this->owner, 'api');
+		$this->assertCount(1, $this->owner->accessibleProjects());
 
-		// $this->get('/api/projects')->assertSee($project->title);
-	
-		$response = $this->actingAs($this->owner, 'api')->getJson('/api/projects');
+		$sean = factory('App\User')->create();
+		$malone = factory('App\User')->create();
 
-		$response->assertStatus(200)->assertJson([
-			'data' => [
-				$project->toArray()
-			]
-		]);
+		$sean_project = tap($sean->projects()->create(factory('App\Project')->raw()))->invite($malone);
+
+		$this->assertCount(1, $this->owner->accessibleProjects());
+
+		$sean_project->invite($this->owner);
+
+		$this->assertCount(2, $this->owner->accessibleProjects());
 	}
 
 }

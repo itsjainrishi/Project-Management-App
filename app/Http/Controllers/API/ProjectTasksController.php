@@ -5,32 +5,13 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use \Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use App\Project;
 use App\Task;
 
 class ProjectTasksController extends Controller
 {
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function index()
-	{
-		//
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create()
-	{
-		//
-	}
-
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -54,38 +35,17 @@ class ProjectTasksController extends Controller
 		]);
 
 		if($validator->fails()){
-			return response()->json(['error'=>$validator->errors()], 422);
+			throw new ValidationException($validator);
 		}
 
 		$project->addTask($request->all());
+		$project = $project->load('tasks');
 
 		if (request()->wantsJson()) {
 			return response()->json($project->toArray(), 201);
 		}
 	}
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
+	
 	/**
 	 * Update the specified resource in storage.
 	 *
@@ -115,16 +75,23 @@ class ProjectTasksController extends Controller
 		]);
 
 		if($validator->fails()){
-			return response()->json(['error'=>$validator->errors()], 422);
+			throw new ValidationException($validator);
 		}
 
-		$task->update($request->all());
+		$task->update([
+			'title' => $request->title,
+			'body' => $request->body,
+		]);
+
+		request('completed') ? $task->complete() : $task->incomplete();
+
+		$project = $project->load(['activity.user', 'activity.subject']);
+		$project = $project->load('tasks');
+		$project = $project->load('members');
 
 		if (request()->wantsJson()) {
 			return response()->json($project->toArray(), 201);
 		}
-
-		return $task;
 	}
 
 	/**
@@ -133,8 +100,14 @@ class ProjectTasksController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function destroy(Project $project, Task $task)
 	{
-		//
+		$this->authorize('manage', $project);
+
+		$task->delete();
+
+		$project = $project->load('tasks');
+
+		return $project;
 	}
 }

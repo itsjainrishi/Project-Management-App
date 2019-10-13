@@ -1,7 +1,7 @@
 $primary: hsl(270, 100%, 55%);
 
 @import "node_modules/bulma/bulma";
-@import "node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "node_modules/toastr/toastr";
 
 .columns.is-centered {
 	.card {
@@ -28,4 +28,60 @@ $primary: hsl(270, 100%, 55%);
 .input:focus, .textbox:focus {
 	box-shadow: none;
 	border-color: hsl(0, 0%, 86%);
+}
+
+.bg-white {
+	background-color: hsl(100,100%,100%);
+}
+.flex {
+	display: flex;
+}
+.flex-column {
+	flex-direction: column;
+}
+.shadow {
+	box-shadow: 0 1px 3px 0 hsla(0, 0%, 0%, 0.1),0 1px 2px 0 hsla(0, 0%, 0%, 0.06);
+}
+.full-rounded {
+	border-radius: 9999px;
+}
+.justify-center {
+	justify-content: center;
+}
+.cursor-pointer {
+	cursor: pointer;
+}
+.color-primary {
+	color: hsl(272, 100%, 50%);
+}
+.text-center {
+	text-align: center;
+}
+.w-full {
+	width: 100%;
+}
+.button {
+	border-color: transparent;
+
+	&:hover, &:focus {
+		border-color: transparent;
+	}
+}
+.tabs {
+	margin-bottom: 2rem;
+	border-radius: 0.25rem;
+	background-color: white;
+
+	ul {
+		margin: 0;
+	}
+}
+.modal-content {
+	max-height: 100vh;
+	width: 80%;
+	max-width: 640px;
+}
+.footer-content {
+	background-color: hsl(210, 38%, 95%) !important;
+	padding: 0 !important;
 }

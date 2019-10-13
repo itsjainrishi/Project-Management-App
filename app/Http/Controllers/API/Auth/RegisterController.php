@@ -61,26 +61,33 @@ class RegisterController extends Controller
 		return view('pages.auth.register');
 	}
 
-	public function register(Request $request)
+	protected function validator(array $data)
 	{
-		$validator = Validator::make($request->all(), [
+		return Validator::make($data, [
 			'name' => ['required', 'string', 'max:255'],
 			'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
 			'password' => ['required', 'string', 'min:8', 'confirmed'],
 		]);
+	}
 
-		if($validator->fails()){
-			return response()->json(['error'=>$validator->errors()], 401);
-		}
+	public function register(Request $request)
+	{
+		$this->validator($request->all())->validate();
 
 		$user = $this->create($request->all());
-		// $user->sendApiEmailVerificationNotification();
+	
+		$user->sendApiEmailVerificationNotification();
 
 		$success['message'] = 'Please confirm yourself by clicking on verify user button sent to you on your email';
 
 		return response()->json(['success'=>$success], $this->successStatus);
 
-		// return $this->registered($request, $user)
-		// 				?: redirect($this->redirectPath());
+		return $this->registered($request, $user)
+						?: redirect($this->redirectPath());
+	}
+
+	protected function guard()
+	{
+		return Auth::guard('api');
 	}
 }

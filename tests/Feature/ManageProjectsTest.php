@@ -28,11 +28,11 @@ class ManageProjectsTest extends TestCase
 	{
 		$project = factory('App\Project')->create();
 
-		$this->get('api/projects')->assertRedirect('login');
-		$this->get('api/projects/create')->assertRedirect('login');
-		$this->get($project->path().'/edit')->assertRedirect('login');
-		$this->get($project->path())->assertRedirect('login');
-		$this->post('api/projects', $project->toArray())->assertRedirect('login');
+		$this->get('/api/projects')->assertRedirect('/api/login');
+		$this->get('/api/projects/create')->assertRedirect('/api/login');
+		$this->get($project->path().'/edit')->assertRedirect('/api/login');
+		$this->get($project->path())->assertRedirect('/api/login');
+		$this->post('/api/projects', $project->toArray())->assertRedirect('/api/login');
 	}
 
 
@@ -83,6 +83,24 @@ class ManageProjectsTest extends TestCase
 
 
 	/** @test */
+	
+	public function a_user_can_see_all_projects_they_have_been_invited_to_on_their_dashboard()
+	{
+		$project = factory('App\Project')->create([
+			'owner_id' => factory('App\User')
+		]);
+
+		$userToInvite = factory('App\User')->create();
+
+		Passport::actingAs($userToInvite);
+		$project = tap($project)->invite($userToInvite);
+
+		$this->get('api/projects')->assertSee($project->title);
+	}
+
+
+
+	/** @test */
 
 	public function a_user_can_view_a_single_project_with_tasks_in_it()
 	{
@@ -95,7 +113,7 @@ class ManageProjectsTest extends TestCase
 
 		Passport::actingAs($this->owner);
 
-		$this->get('api/projects/'.$project->slug)->assertSee($task->title);
+		$this->getJson('api/projects/'.$project->slug)->assertSee($task->title);
 	}
 
 
@@ -127,7 +145,7 @@ class ManageProjectsTest extends TestCase
 		];
 
 		Passport::actingAs($this->owner);
-		$this->putJson($project->path(), $attributes)->assertStatus(200)->assertJson($attributes);
+		$this->putJson($project->path(), $attributes)->assertStatus(201)->assertJson($attributes);
 	}
 
 
@@ -185,6 +203,6 @@ class ManageProjectsTest extends TestCase
 		]);
 
 		Passport::actingAs($this->owner);
-		$this->postJson('api/projects', $attributes)->assertStatus(401)->assertSee('The title field is required')->assertSee('The description field is required');
+		$this->postJson('api/projects', $attributes)->assertStatus(422)->assertSee('The title field is required')->assertSee('The description field is required');
 	}
 }

@@ -12,20 +12,13 @@ class AuthenticationTest extends TestCase
 {
 	use RefreshDatabase, WithFaker;
 
-	/** @test */
-
-	// public function a_guest_can_register()
-	// {
-	// 	$this->assertInstanceOf(Collection::class, $this->owner->projects);
-	// }
-
 	public function testUserCanAccessApi()
 	{
-        Passport::actingAs(
-            factory(\App\User::class)->create()
-        );
+		Passport::actingAs(
+			factory(\App\User::class)->create()
+		);
 
-        $response = $this->get('/api/user');
-        $response->assertStatus(200);
+		$response = $this->get('/api/user');
+		$response->assertStatus(200);
 	}
 }

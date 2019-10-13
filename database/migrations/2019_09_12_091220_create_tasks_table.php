@@ -21,10 +21,8 @@ class CreateTasksTable extends Migration
             $table->string('slug')->unique();
 			$table->tinyInteger('priority')->default(0);
 			$table->boolean('completed')->default(false);
-			$table->softDeletes();
 			$table->timestamps();
 
-			$table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
 		});
 	}
 

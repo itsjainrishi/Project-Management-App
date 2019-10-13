@@ -31,8 +31,10 @@ class VerifyApiEmail extends VerifyEmailBase implements ShouldQueue
 
 		return URL::temporarySignedRoute(
 
-			'apiverification.verify', Carbon::now()->addMinutes(60), ['id' => $notifiable->getKey()]
-
+			'apiverification.verify', Carbon::now()->addMinutes(60), [
+				'id' => $notifiable->getKey(),
+				'hash' => sha1($notifiable->getEmailForVerification()),
+				]
 		);
 
 	}

@@ -49,10 +49,9 @@ class LoginController extends Controller
 
 		$credentials = request(['email', 'password']);
 
-		if(!Auth::attempt($credentials))
-			return response()->json([
-				'message' => 'Unauthorized'
-			], 401);
+		if(!Auth::attempt($credentials)) {
+			return $this->sendFailedLoginResponse($request);
+		}
 		
 		$user = $request->user();
 		$token = $user->createToken('ProjectBoard');
@@ -75,5 +74,10 @@ class LoginController extends Controller
 		return response()->json([
 			'message' => 'Successfully logged out'
 		]);
+	}
+
+	protected function guard()
+	{
+		return Auth::guard('api');
 	}
 }

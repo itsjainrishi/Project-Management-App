@@ -48,7 +48,7 @@
 				font-size: 84px;
 			}
 
-			.links > a {
+			.links span, a {
 				color: #636b6f;
 				padding: 0 25px;
 				font-size: 13px;
@@ -66,20 +66,22 @@
 	<body>
 		<div id="app">
 			<div class="flex-center position-ref full-height">
-				@if (Route::has('login'))
-					<div class="top-right links">
-						@auth
-							<a href="{{ url('/home') }}">Home</a>
-						@else
-							<a href="{{ route('login') }}">Login</a>
-
-							@if (Route::has('register'))
-								<a href="{{ route('register') }}">Register</a>
-							@endif
-						@endauth
-					</div>
-				@endif
-
+				<div class="top-right links">
+					@auth
+						<router-link to="/api/login">
+							<span>Something</span>
+						</router-link>
+					@else
+						<router-link to="/api/login">
+							<span>Login</span>
+						</router-link>
+						
+						<router-link to="/api/register">
+							<span>Register</span>
+						</router-link>
+					@endauth
+				</div>
+				
 				<div class="content">
 					<div class="title m-b-md">
 						Laravel

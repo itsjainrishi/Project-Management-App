@@ -14,6 +14,18 @@ use Illuminate\Http\Request;
 */
 // Auth::routes(['verify' => true])->namespace('API');
 
+Route::get('/', function () {
+	return view('pages.home');
+});
+
+Route::get('/login', function () {
+	return view('pages.home');
+})->name('api.login');
+
+Route::get('/register', function () {
+	return view('pages.home');
+});
+
 Route::group(['namespace' => 'API'], function () {
 
 	Route::post('/register', 'Auth\RegisterController@register');
@@ -36,4 +48,12 @@ Route::group(['middleware' => ['auth:api'], 'namespace' => 'API'], function () {
 	Route::resource('projects', 'ProjectsController');
 	Route::post('/projects/{project}/tasks', 'ProjectTasksController@store');
 	Route::put('/projects/{project}/tasks/{task}', 'ProjectTasksController@update');
+	Route::delete('/projects/{project}/tasks/{task}', 'ProjectTasksController@destroy');
+	Route::post('/projects/{project}/invitations', 'ProjectInvitationsController@store');
+});
+
+Route::group(['middleware' => ['auth:api']], function () {
+	Route::get('{path?}', function() {
+		return view('pages.home');
+	})->where('path', '[\/\w\.-]*');
 });

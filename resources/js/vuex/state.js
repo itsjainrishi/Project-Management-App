@@ -1,0 +1,17 @@
+export default {
+	path: '',
+	token: localStorage.getItem('token') || '',
+	projects: [],
+	tasks: [],
+	selectedProject: {},
+	createProjectModalActive: false,
+	selectedTask: {},
+	editTaskModalActive: false,
+	authUser: {},
+	verifiedAt: null,
+	dataUserSelected: null,
+	emailresent: false,
+	createTaskModalActive: false,
+	showTaskModalActive: false,
+	editProjectModalActive: false,
+};

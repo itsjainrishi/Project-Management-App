@@ -37,7 +37,7 @@ class ProjectTasksTest extends TestCase
 		];
 		$this->post($this->project->path() . '/tasks', $attributes);
 
-		$this->get($this->project->path())->assertSee($attributes['title']);
+		$this->getJson($this->project->path())->assertSee($attributes['title']);
 	}
 
 
@@ -45,7 +45,7 @@ class ProjectTasksTest extends TestCase
 
 	public function guest_can_not_add_task_to_project() {
 
-		$this->post($this->project->path() . '/tasks')->assertRedirect('login');
+		$this->post($this->project->path() . '/tasks')->assertRedirect('/api/login');
 	}
 
 
@@ -122,6 +122,8 @@ class ProjectTasksTest extends TestCase
 		]);
 
 		$attributes = [
+			'title' => 'changed title',
+			'body' => 'changed body',
 			'completed' => true,
 		];
 
@@ -144,6 +146,8 @@ class ProjectTasksTest extends TestCase
 		]);
 
 		$attributes = [
+			'title' => 'changed title',
+			'body' => 'changed body',
 			'completed' => false,
 		];
 
@@ -155,7 +159,7 @@ class ProjectTasksTest extends TestCase
 	
 	/** @test */
 	
-	public function a_task_requires_a_body()
+	public function a_task_requires_a_title_and_a_body()
 	{
 		$attributes = factory('App\Task')->raw([
 			'title' => '',
@@ -164,6 +168,6 @@ class ProjectTasksTest extends TestCase
 		]);
 
 		Passport::actingAs($this->owner);
-		$this->postJson($this->project->path() . '/tasks', $attributes)->assertStatus(401)->assertSee('The title field is required')->assertSee('The body field is required');
+		$this->postJson($this->project->path() . '/tasks', $attributes)->assertStatus(422)->assertSee('The title field is required')->assertSee('The body field is required');
 	}
 }
